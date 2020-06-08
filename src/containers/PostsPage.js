@@ -1,17 +1,14 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { connect } from 'react-redux'
 
-import { fetchPosts, postsSelector } from '../slices/posts'
+import { fetchPosts } from '../actions/postsActions'
 
 import { Post } from '../components/Post'
 
-const PostsPage = () => {
-  const dispatch = useDispatch()
-  const { posts, loading, hasErrors } = useSelector(postsSelector)
-
+const PostsPage = ({ dispatch, loading, posts, hasErrors }) => {
   useEffect(() => {
     dispatch(fetchPosts())
-  }, [dispatch])
+  }, [])
 
   const renderPosts = () => {
     if (loading) return <p>Loading posts...</p>
@@ -28,4 +25,10 @@ const PostsPage = () => {
   )
 }
 
-export default PostsPage
+const mapStateToProps = state => ({
+  loading: state.posts.loading,
+  posts: state.posts.posts,
+  hasErrors: state.posts.hasErrors,
+})
+
+export default connect(mapStateToProps)(PostsPage)
